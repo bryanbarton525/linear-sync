@@ -62,3 +62,8 @@ HTTP
 - github.com/jackc/pgx/v5
 - net/http
 
+---
+
+## Constitution Amendment — Cycle 1
+
+QA blocking issues: 1. Missing go.mod file (requirement gap), 2. Duplicate function (implementation defect), 3. Incomplete struct initialization (implementation defect), 4. Field name inconsistency (implementation defect), 5. Inconsistent package names (design gap), 6. Server handlers not properly initialized (implementation defect).
