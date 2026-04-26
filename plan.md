@@ -45,3 +45,21 @@ git@github.com:bryanbarton525/linear-sync.git
 | 3e181781 | backend | Create BackgroundSync | - | Produce artifact kind `code`, name `background_sync.go`. Implement the BackgroundSync struct to run a ticker-based sync loop every SYNC_INTERVAL_MINUTES (default 15 minutes). Use errgroup.Group for graceful shutdown and context propagation. Ensure the background task fetches issues using LinearClient and upserts them using PostgreSQLStorage. |
 | b2a250ff | backend | Create main.go | Create L, Create P, Create H, Create B | Produce artifact kind `code`, name `main.go`. Implement the entry point of the application. Initialize LinearClient, PostgreSQLStorage, HTTPServer, and BackgroundSync. Validate environment variables LINEAR_API_KEY, LINEAR_TEAM_KEY, DATABASE_URL, and SYNC_INTERVAL_MINUTES at startup. Start the HTTP server and background sync loop. |
 
+---
+
+## Remediation Cycle 1 — PM Triage
+
+QA blocking issues: 1. Missing go.mod file (requirement gap), 2. Duplicate function (implementation defect), 3. Incomplete struct initialization (implementation defect), 4. Field name inconsistency (implementation defect), 5. Inconsistent package names (design gap), 6. Server handlers not properly initialized (implementation defect).
+
+**QA blocking issues being triaged:**
+
+- validation tidy_dependencies failed via go_mod_tidy: mcp: {"passed":false,"success":false,"stderr":"go: go.mod file not found in current directory or any parent directory; see 'go help modules'\n","output":"go: go.mod file not found in current directory or any parent directory; see 'go help modules'","error":"exit status 1","metadata":{"command":"go mod tidy","duration_ms":49,"exit_code":1,"truncated":false}}
+- validation run_tests failed via go_test: mcp: {"passed":false,"success":false,"stdout":"FAIL\t./... [setup failed]\nFAIL\n","stderr":"# ./...\npattern ./...: directory prefix . does not contain main module or its selected dependencies\n","output":"# ./...\npattern ./...: directory prefix . does not contain main module or its selected dependencies","error":"exit status 1","metadata":{"command":"go test ./...","duration_ms":47,"exit_code":1,"truncated":false}}
+- validation run_build failed via go_build: mcp: {"passed":false,"success":false,"stderr":"pattern ./...: directory prefix . does not contain main module or its selected dependencies\n","output":"pattern ./...: directory prefix . does not contain main module or its selected dependencies","error":"exit status 1","metadata":{"command":"go build ./...","duration_ms":7,"exit_code":1,"truncated":false}}
+- [Module Initialization] Missing go.mod file in workspace. All validation steps (go mod tidy, go test, go build) fail because the workspace is not a valid Go module. This is a fundamental setup issue.: Create go.mod file with module path github.com/bryanbarton525/linear-sync and run go mod tidy to add dependencies
+- [linear_client.go] Duplicate NewLinearClient function defined twice in the same file (lines ~62 and ~104). This violates Go conventions.: Remove duplicate function definition, keep only one
+- [postgres_storage.go] Struct initialization incomplete: 'pool:' is missing closing brace. Also missing 'sync' import despite using sync.Mutex in struct.: Complete struct initialization with proper closing brace and add missing import
+- [PostgreSQL Storage] Field name inconsistency: Issue struct uses StatusName while linear_client.go uses StatusID. This will cause mismatch between client and storage.: Align field names between linear_client.go and postgres_storage.go Issue structs
+- [Package Organization] Inconsistent package names across artifacts (linear, storage, orca, main). Orca package does not match other package conventions.: Use consistent package names that match module structure: 'internal/linear', 'internal/storage', 'internal/server'
+- [HTTP Server] Server handlers never properly initialized. HandleIssues, handleSync methods receive nil handlers that are never set. Healthz handler also has method routing issues.: Properly wire handlers or use ServeMux pattern correctly. Fix handleIssues, handleSync methods to accept proper handlers
+
