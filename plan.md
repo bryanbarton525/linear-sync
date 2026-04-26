@@ -63,3 +63,20 @@ QA blocking issues: 1. Missing go.mod file (requirement gap), 2. Duplicate funct
 - [Package Organization] Inconsistent package names across artifacts (linear, storage, orca, main). Orca package does not match other package conventions.: Use consistent package names that match module structure: 'internal/linear', 'internal/storage', 'internal/server'
 - [HTTP Server] Server handlers never properly initialized. HandleIssues, handleSync methods receive nil handlers that are never set. Healthz handler also has method routing issues.: Properly wire handlers or use ServeMux pattern correctly. Fix handleIssues, handleSync methods to accept proper handlers
 
+---
+
+## Remediation Cycle 1 — Architect
+
+**Current overview:** The service will authenticate with Linear using an API key, fetch issues from a specified team using the Linear GraphQL API, and upsert them into a PostgreSQL database. It will expose HTTP endpoints for querying and syncing issues, and run a background sync loop at configurable intervals.
+
+### Remediation Tasks
+
+| ID | Specialty | Title | Depends On | Description |
+|---|---|---|---|---|
+| 9ce013dd | backend | Create go.mod file | - | Produce artifact kind `code`, name `go.mod`. Create a go.mod file with module path github.com/bryanbarton525/linear-sync. Run go mod tidy to add dependencies. |
+| 9d6db9c9 | backend | Remove duplicate NewLinearClient function | Create g | Produce artifact kind `code`, name `linear_client.go`. Remove the duplicate NewLinearClient function definition, keeping only one. |
+| 3c7f315f | backend | Complete PostgreSQLStorage struct initialization | Create g | Produce artifact kind `code`, name `postgres_storage.go`. Complete the struct initialization with proper closing brace and add missing import for sync.Mutex. |
+| 4ec3c35f | backend | Align field names between linear_client.go and postgres_storage.go Issue structs | Create g | Produce artifact kind `code`, name `linear_client.go` and `postgres_storage.go`. Align the field names between the two Issue structs (e.g., use StatusName in both). |
+| 5890f394 | backend | Rename packages to match module structure | Create g | Produce artifact kind `code`, name `linear_client.go` and other related files. Rename the package names to 'internal/linear', 'internal/storage', 'internal/server' as per Go convention. |
+| adb8b933 | backend | Properly wire HTTP server handlers | Create g | Produce artifact kind `code`, name `http_server.go`. Properly wire the HTTP server handlers to accept proper handlers. Ensure HandleIssues, handleSync methods are correctly set and wired. |
+
