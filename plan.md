@@ -109,3 +109,18 @@ QA blocking issues: 1. Missing go.mod file (requirement gap), 2. Duplicate funct
 | ac55f4d1 | backend | Rename packages to match module structure | - | Produce artifact kind `code`, name `linear_client.go` and other related files. Rename the package names to 'internal/linear', 'internal/storage', 'internal/server' as per Go convention. |
 | 01a1aa95 | backend | Properly wire HTTP server handlers | - | Produce artifact kind `code`, name `http_server.go`. Properly wire the HTTP server handlers to accept proper handlers. Ensure HandleIssues, handleSync methods are correctly set and wired. |
 
+---
+
+## Remediation Cycle 1 — PM Triage
+
+QA blocking issues: 1. Missing go.mod file (requirement gap), 2. Duplicate function (implementation defect), 3. Incomplete struct initialization (implementation defect), 4. Field name inconsistency (implementation defect), 5. Inconsistent package names (design gap), 6. Server handlers not properly initialized (implementation defect). Constitution amendment: add missing go.mod file.
+
+**QA blocking issues being triaged:**
+
+- validation tidy_dependencies failed via go_mod_tidy: mcp: {"passed":false,"success":false,"stderr":"go: go.mod file not found in current directory or any parent directory; see 'go help modules'\n","output":"go: go.mod file not found in current directory or any parent directory; see 'go help modules'","error":"exit status 1","metadata":{"command":"go mod tidy","duration_ms":5,"exit_code":1,"truncated":false}}
+- validation run_tests failed via go_test: mcp: {"passed":false,"success":false,"stdout":"FAIL\t./... [setup failed]\nFAIL\n","stderr":"# ./...\npattern ./...: directory prefix . does not contain main module or its selected dependencies\n","output":"# ./...\npattern ./...: directory prefix . does not contain main module or its selected dependencies","error":"exit status 1","metadata":{"command":"go test ./...","duration_ms":10,"exit_code":1,"truncated":false}}
+- validation run_build failed via go_build: mcp: {"passed":false,"success":false,"stderr":"pattern ./...: directory prefix . does not contain main module or its selected dependencies\n","output":"pattern ./...: directory prefix . does not contain main module or its selected dependencies","error":"exit status 1","metadata":{"command":"go build ./...","duration_ms":6,"exit_code":1,"truncated":false}}
+- validation tidy_dependencies failed via go_mod_tidy: mcp: {"passed":false,"success":false,"stderr":"go: go.mod file not found in current directory or any parent directory; see 'go help modules'\n","output":"go: go.mod file not found in current directory or any parent directory; see 'go help modules'","error":"exit status 1","metadata":{"command":"go mod tidy","duration_ms":30,"exit_code":1,"truncated":false}}
+- validation run_tests failed via go_test: mcp: {"passed":false,"success":false,"stdout":"FAIL\t./... [setup failed]\nFAIL\n","stderr":"# ./...\npattern ./...: directory prefix . does not contain main module or its selected dependencies\n","output":"# ./...\npattern ./...: directory prefix . does not contain main module or its selected dependencies","error":"exit status 1","metadata":{"command":"go test ./...","duration_ms":11,"exit_code":1,"truncated":false}}
+- validation run_build failed via go_build: mcp: {"passed":false,"success":false,"stderr":"pattern ./...: directory prefix . does not contain main module or its selected dependencies\n","output":"pattern ./...: directory prefix . does not contain main module or its selected dependencies","error":"exit status 1","metadata":{"command":"go build ./...","duration_ms":7,"exit_code":1,"truncated":false}}
+
