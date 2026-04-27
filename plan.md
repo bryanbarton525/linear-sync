@@ -124,3 +124,26 @@ QA blocking issues: 1. Missing go.mod file (requirement gap), 2. Duplicate funct
 - validation run_tests failed via go_test: mcp: {"passed":false,"success":false,"stdout":"FAIL\t./... [setup failed]\nFAIL\n","stderr":"# ./...\npattern ./...: directory prefix . does not contain main module or its selected dependencies\n","output":"# ./...\npattern ./...: directory prefix . does not contain main module or its selected dependencies","error":"exit status 1","metadata":{"command":"go test ./...","duration_ms":11,"exit_code":1,"truncated":false}}
 - validation run_build failed via go_build: mcp: {"passed":false,"success":false,"stderr":"pattern ./...: directory prefix . does not contain main module or its selected dependencies\n","output":"pattern ./...: directory prefix . does not contain main module or its selected dependencies","error":"exit status 1","metadata":{"command":"go build ./...","duration_ms":7,"exit_code":1,"truncated":false}}
 
+---
+
+## Remediation Cycle 1 — Architect
+
+**Current overview:** The service will authenticate with Linear using an API key, fetch issues from a specified team using the Linear GraphQL API, and upsert them into a PostgreSQL database. It will expose HTTP endpoints for querying and syncing issues, and run a background sync loop at configurable intervals.
+
+### Remediation Tasks
+
+| ID | Specialty | Title | Depends On | Description |
+|---|---|---|---|---|
+| 9ce013dd | backend | Create go.mod file | - | Produce artifact kind `code`, name `go.mod`. Create a go.mod file with module path github.com/bryanbarton525/linear-sync. Run go mod tidy to add dependencies. |
+| 9d6db9c9 | backend | Remove duplicate NewLinearClient function | Create g | Produce artifact kind `code`, name `linear_client.go`. Remove the duplicate NewLinearClient function definition, keeping only one. |
+| 3c7f315f | backend | Complete PostgreSQLStorage struct initialization | Create g | Produce artifact kind `code`, name `postgres_storage.go`. Complete the struct initialization with proper closing brace and add missing import for sync.Mutex. |
+| 4ec3c35f | backend | Align field names between linear_client.go and postgres_storage.go Issue structs | Create g | Produce artifact kind `code`, name `linear_client.go` and `postgres_storage.go`. Align the field names between the two Issue structs (e.g., use StatusName in both). |
+| 5890f394 | backend | Rename packages to match module structure | Create g | Produce artifact kind `code`, name `linear_client.go` and other related files. Rename the package names to 'internal/linear', 'internal/storage', 'internal/server' as per Go convention. |
+| adb8b933 | backend | Properly wire HTTP server handlers | Create g | Produce artifact kind `code`, name `http_server.go`. Properly wire the HTTP server handlers to accept proper handlers. Ensure HandleIssues, handleSync methods are correctly set and wired. |
+| 9c46a6cc | backend | Create go.mod file | - | Produce artifact kind `code`, name `go.mod`. Create a go.mod file with module path github.com/bryanbarton525/linear-sync. Run go mod tidy to add dependencies. |
+| cd2b9222 | backend | Remove duplicate NewLinearClient function | - | Produce artifact kind `code`, name `linear_client.go`. Remove the duplicate NewLinearClient function definition, keeping only one. |
+| f1744b81 | backend | Complete PostgreSQLStorage struct initialization | - | Produce artifact kind `code`, name `postgres_storage.go`. Complete the struct initialization with proper closing brace and add missing import for sync.Mutex. |
+| 47f79dc1 | backend | Align field names between linear_client.go and postgres_storage.go Issue structs | - | Produce artifact kind `code`, name `linear_client.go` and `postgres_storage.go`. Align the field names between the two Issue structs (e.g., use StatusName in both). |
+| 80d064aa | backend | Rename packages to match module structure | - | Produce artifact kind `code`, name `linear_client.go` and other related files. Rename the package names to 'internal/linear', 'internal/storage', 'internal/server' as per Go convention. |
+| e5e338ee | backend | Properly wire HTTP server handlers | - | Produce artifact kind `code`, name `http_server.go`. Properly wire the HTTP server handlers to accept proper handlers. Ensure HandleIssues, handleSync methods are correctly set and wired. |
+
