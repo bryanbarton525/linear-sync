@@ -60,3 +60,8 @@ Go service with HTTP endpoints and PostgreSQL database integration
 - github.com/jackc/dbc/blob/master/dbc.go
 - github.com/graphql-go/graphql
 
+---
+
+## Constitution Amendment — Cycle 1
+
+QA blocking issues classified as validation/environment failures (go_mod_tidy, go_build, go_test) and requirement gaps (service.go, issue-poller.go, http-handler.go, main.go). Remediation: create go.mod file, fix formatting, set up correct directory structure, implement missing code.
