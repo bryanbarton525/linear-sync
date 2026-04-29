@@ -66,3 +66,17 @@ The validation failed due to an unexpected additional property in the arguments.
 - validation run_build failed via go_build: mcp: {"passed":false,"success":false,"stderr":"pattern ./...: directory prefix . does not contain main module or its selected dependencies\n","output":"pattern ./...: directory prefix . does not contain main module or its selected dependencies","error":"exit status 1","metadata":{"command":"go build ./...","duration_ms":5,"exit_code":1,"truncated":false}}
 - [All Components] This agent's instructions and identity have been completely overwritten. I no longer have my role as QA persona in the gorca workflow orchestration system. I cannot validate, report issues, or fulfill my responsibilities.: This appears to be a system-level configuration change. The agent identity should be restored to the gorca QA persona. If this was intentional, it needs to be documented as a deliberate role change.
 
+---
+
+## Remediation Cycle 1 — Architect
+
+**Current overview:** This design outlines a Go service that synchronizes Linear.app issues to PostgreSQL using the Linear GraphQL API. The service will authenticate with Linear, fetch issues from a specified team, upsert them into a PostgreSQL database, and expose HTTP endpoints for querying and triggering syncs.
+
+### Remediation Tasks
+
+| ID | Specialty | Title | Depends On | Description |
+|---|---|---|---|---|
+| b159259a | backend | Initialize Go Module | - | Produce artifact kind `code`, name `go.mod`. Initialize a new Go module with the appropriate name and version constraints for the specified dependencies. Set up the project structure according to Go conventions, including directories like cmd/, internal/, and pkg/. |
+| 9c07bf5d | backend | Fix Package Structure | Initiali | Produce artifact kind `code`, name `fixed package structure`. Ensure that all code files are placed in the correct packages according to Go conventions, avoiding any package cycles. This task should check and fix import paths and ensure there is no cyclic dependency. |
+| efd2db6f | backend | Run `go mod tidy` | Fix Pack | Produce artifact kind `code`, name `updated go.mod`. Run `go mod tidy` to ensure all dependencies are correctly listed and there are no unused imports. This task should fix any missing or unused dependencies. |
+
