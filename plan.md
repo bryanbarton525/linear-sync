@@ -64,3 +64,23 @@ QA blocking issues classified as validation/environment failures (go_mod_tidy, g
 - [main.go] The provided main.go file does not contain any implementation details and appears to be a stub.: Implement the /issues GET endpoint in HTTPHandler to return a list of issues from PostgreSQL, and ensure that all endpoints are accessible and functional.
 - [HTTPHandler.go] The provided HTTPHandler.go file does not contain any implementation details and appears to be a stub.: Implement the /healthz GET endpoint in HTTPHandler to return service health status, and ensure that all endpoints are accessible and functional.
 
+---
+
+## Remediation Cycle 1 — Architect
+
+**Current overview:** linear-sync is a Go service that polls the Linear GraphQL API every 5 minutes and upserts issues into a PostgreSQL table. It exposes /issues, /sync, and /healthz endpoints.
+
+### Remediation Tasks
+
+| ID | Specialty | Title | Depends On | Description |
+|---|---|---|---|---|
+| 8e8dec14 | backend | Create go.mod file | - | Produce artifact kind `go`, name `go.mod`. Add necessary dependencies for Go modules, HTTP client, server, and PostgreSQL driver. |
+| fa13c027 | backend | Fix formatting in code files | Create g | Produce artifact kind `go`, name `*.go`. Fix all formatting issues identified by go_fmt, ensuring all string literals are properly terminated and missing commas are added. |
+| a8acc634 | backend | Initialize main.go with service initialization | Fix form | Produce artifact kind `go`, name `main.go`. Initialize LinearSyncService, IssuePoller, and HTTPHandler in the main function. |
+| cbdca833 | backend | Implement LinearSyncService struct | Initiali | Produce artifact kind `go`, name `linear-sync/service.go`. Define the LinearSyncService struct with methods for running the service, including initialization of IssuePoller and HTTPHandler. |
+| 59dc2ad8 | backend | Implement IssuePoller component | Initiali | Produce artifact kind `go`, name `linear-sync/issue-poller.go`. Implement the IssuePoller struct with methods for polling the Linear GraphQL API and upserting issues into PostgreSQL. |
+| ccc791f8 | backend | Implement HTTPHandler component | Initiali | Produce artifact kind `go`, name `linear-sync/http-handler.go`. Implement the HTTPHandler struct with methods for handling /issues, /sync, and /healthz endpoints. |
+| 5b63be3a | backend | Implement /issues GET endpoint in HTTPHandler | Initiali | Produce artifact kind `go`, name `linear-sync/http-handler.go`. Implement the /issues GET endpoint to return a list of issues from PostgreSQL. |
+| 52589443 | backend | Implement /sync POST endpoint in HTTPHandler | Initiali | Produce artifact kind `go`, name `linear-sync/http-handler.go`. Implement the /sync POST endpoint to trigger an immediate sync of issues. |
+| 4a3cd13c | backend | Implement /healthz GET endpoint in HTTPHandler | Initiali | Produce artifact kind `go`, name `linear-sync/http-handler.go`. Implement the /healthz GET endpoint to return service health status. |
+
