@@ -92,3 +92,17 @@ validation/environment failure: go.mod file not found in workspace; remediation 
 - validation run_tests failed via go_test: mcp: {"passed":false,"success":false,"stdout":"FAIL\t./... [setup failed]\nFAIL\n","stderr":"# ./...\npattern ./...: directory prefix . does not contain main module or its selected dependencies\n","output":"# ./...\npattern ./...: directory prefix . does not contain main module or its selected dependencies","error":"exit status 1","metadata":{"command":"go test ./...","duration_ms":11,"exit_code":1,"truncated":false}}
 - validation run_build failed via go_build: mcp: {"passed":false,"success":false,"stderr":"pattern ./...: directory prefix . does not contain main module or its selected dependencies\n","output":"pattern ./...: directory prefix . does not contain main module or its selected dependencies","error":"exit status 1","metadata":{"command":"go build ./...","duration_ms":6,"exit_code":1,"truncated":false}}
 
+---
+
+## Remediation Cycle 2 — Architect
+
+**Current overview:** This design outlines a Go service that synchronizes Linear.app issues to PostgreSQL using the Linear GraphQL API. The service will authenticate with Linear, fetch issues from a specified team, upsert them into a PostgreSQL database, and expose HTTP endpoints for querying and triggering syncs.
+
+### Remediation Tasks
+
+| ID | Specialty | Title | Depends On | Description |
+|---|---|---|---|---|
+| 8930394b | backend | Initialize Go Module | - | Produce artifact kind `code`, name `go.mod`. Initialize a new Go module with the appropriate name and version constraints for the specified dependencies. Set up the project structure according to Go conventions, including directories like cmd/, internal/, and pkg/. |
+| 499e9dae | backend | Fix Package Structure | Initiali | Produce artifact kind `code`, name `fixed package structure`. Ensure that all code files are placed in the correct packages according to Go conventions, avoiding any package cycles. This task should check and fix import paths and ensure there is no cyclic dependency. |
+| c50b0c09 | backend | Run `go mod tidy` | Fix Pack | Produce artifact kind `code`, name `updated go.mod`. Run `go mod tidy` to ensure all dependencies are correctly listed and there are no unused imports. This task should fix any missing or unused dependencies. |
+
