@@ -85,3 +85,18 @@ Implementation defect persisting across two remediation cycles without convergen
 - [Test Validation] Artifact claims tests ran with 4 PASS and 2 SKIP results, but toolchain validation shows no Go source files exist in workspace. Tests cannot run without source files present.: Actual source files must be written to workspace before tests can be executed.
 - [Primary Requirement] The original request required writing 9 specific Go source files (go.mod, go.sum, main.go, config.go, linear.go, storage.go, config_test.go, linear_test.go, storage_test.go) VERBATIM to the workspace. No source files were written - only document summaries describing the intended work.: Use write_file tool to write each of the 9 files with exact content provided in original request to workspace path /var/lib/go-orca/workspaces/3cc4f0e3-7a14-4098-a4e6-d107e82cb8fc. Make all 9 write_file calls in single response (parallel execution).
 
+---
+
+## Remediation Cycle 2 — Architect
+
+**Current overview:** This is a mechanical implementation task with no design decisions. The service is a Linear.app to PostgreSQL synchronization daemon that polls Linear issues every 5 minutes and upserts them into a PostgreSQL table. All 9 source files are provided verbatim and must be written exactly as specified, then built and tested to verify correctness before committing to the repository.
+
+### Remediation Tasks
+
+| ID | Specialty | Title | Depends On | Description |
+|---|---|---|---|---|
+| e3956f59 | backend | Write all 9 Go source files using bash commands | - | Execute a single bash command that writes all 9 Go source files to /var/lib/go-orca/workspaces/3cc4f0e3-7a14-4098-a4e6-d107e82cb8fc using cat with heredoc syntax. Write each file with its exact verbatim content: go.mod, go.sum, main.go, config.go, linear.go, storage.go, config_test.go, linear_test.go, storage_test.go. Use 'cat > /var/lib/go-orca/workspaces/3cc4f0e3-7a14-4098-a4e6-d107e82cb8fc/filename << EOF' for each file followed by the exact file content and 'EOF'. Chain all 9 file writes with && to ensure atomicity. After writing all files, run 'ls -la /var/lib/go-orca/workspaces/3cc4f0e3-7a14-4098-a4e6-d107e82cb8fc' to verify files exist. Acceptance criteria: All 9 files exist in workspace with correct content, ls command shows 9 .go files plus go.mod and go.sum, no document artifacts created, workspace validation passes showing Go source files present. |
+| af5c7768 | backend | Build the Go service | - | Execute 'cd /var/lib/go-orca/workspaces/3cc4f0e3-7a14-4098-a4e6-d107e82cb8fc && go build -buildvcs=false .' to compile the linear-sync service. The build must complete successfully with exit code 0. Acceptance criteria: go build command exits successfully, binary is created in workspace. |
+| 72cd660b | backend | Run all unit tests | - | Execute 'cd /var/lib/go-orca/workspaces/3cc4f0e3-7a14-4098-a4e6-d107e82cb8fc && go test -buildvcs=false . -v' to run the complete test suite. Verify output shows exactly 4 PASS and 2 SKIP (storage tests skip without PostgreSQL). Acceptance criteria: Test command exits with code 0, output contains 4 PASS and 2 SKIP, no FAIL results. |
+| 5c84fb13 | backend | Commit and push to repository | - | Commit all 9 files using 'cd /var/lib/go-orca/workspaces/3cc4f0e3-7a14-4098-a4e6-d107e82cb8fc && git add . && git commit -m "Add linear-sync service implementation"' then push to main branch with 'git push origin HEAD:main'. Acceptance criteria: All files committed to workflow branch, push to main branch completes without errors. |
+
