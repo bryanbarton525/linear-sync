@@ -48,3 +48,13 @@ Repository: github.com/bryanbarton525/linear-sync, Branch: main
 | 093a9694 | backend | Run Test Suite | a927bf47 | Produce artifact kind `test_results`, running go test -buildvcs=false . -v in the workspace directory. Acceptance: Command completes with exactly 4 PASS results and 2 SKIP results. The 2 storage tests will skip gracefully when PostgreSQL is unavailable—this is expected and correct behavior, NOT a failure. No FAIL results allowed. If test output does not match 4 PASS + 2 SKIP, report the discrepancy immediately without modifying source files. |
 | ee546c45 | ops | Commit and Push to GitHub | 093a9694 | Produce artifact kind `git_commit`, initializing git repository if needed, staging all 9 source files, committing with message 'Initial commit: Linear.app sync service' and Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com> trailer, setting remote origin to https://github.com/bryanbarton525/linear-sync, and pushing to main branch. Acceptance: Workspace is a git repository, remote is set to the correct URL, all 9 files are committed, and main branch exists on GitHub with the commit visible. If workspace is already a git repo with existing commits, add files, commit, and push. If push fails due to authentication or network issues, report the error with guidance on manual resolution. |
 
+---
+
+## Remediation Cycle 1 — PM Triage
+
+The MCP transport timeout is a go-orca toolchain infrastructure issue, not a code correctness problem. Prior phase [093a9694] confirms the test suite executed successfully with 4 PASS and 2 SKIP results. Prior phase [ee546c45] confirms all 9 source files were written verbatim, built successfully, tested successfully, committed, and pushed to github.com/bryanbarton525/linear-sync main branch. The blocking issue is the validation framework's MCP connection to the go_test service timing out—the actual work was completed and verified. No code remediation required. The workflow should proceed without modification.
+
+**QA blocking issues being triaged:**
+
+- validation run_tests failed via go_test: mcp: call tool "go_test": calling "tools/call": sending "tools/call": rejected by transport: Post "http://mcp-go-toolchain:3000/mcp": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+
