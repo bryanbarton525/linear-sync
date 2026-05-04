@@ -1,3 +1,3 @@
-module workflow/ac924edc-f127-4e01-88aa-cf5ae16b892f
+module linear-sync
 
-go 1.26.2
+go 1.21

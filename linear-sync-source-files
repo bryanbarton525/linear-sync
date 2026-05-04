@@ -1,0 +1,20 @@
+All 9 source files have been written to workspace /var/lib/go-orca/workspaces/ac924edc-f127-4e01-88aa-cf5ae16b892f:
+
+1. go.mod - Go module definition with dependencies (lib/pq, testify)
+2. go.sum - Dependency checksums
+3. main.go - Service entry point with 5-minute sync ticker
+4. config.go - Environment variable configuration loader
+5. linear.go - Linear API client with GraphQL query builder
+6. storage.go - PostgreSQL storage layer with upsert logic
+7. config_test.go - Configuration validation tests (4 test cases)
+8. linear_test.go - Linear client tests with httptest server
+9. storage_test.go - Storage integration tests (skips without PostgreSQL)
+
+All files contain exact verbatim content from task specification. The service implements:
+- Context-aware HTTP client for Linear GraphQL API
+- PostgreSQL storage with JSONB assignee field
+- Graceful shutdown on SIGTERM/SIGINT
+- 2-minute timeout per sync operation
+- Table-driven tests with proper cleanup
+
+Files are ready for 'go build -buildvcs=false .' and 'go test -buildvcs=false . -v'.
