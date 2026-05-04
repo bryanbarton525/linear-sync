@@ -85,3 +85,17 @@ The 9 Go source files were not written to the workspace directory. QA validation
 
 - validation run_tests failed via go_test: mcp: {"passed":false,"success":false,"stderr":"go: warning: \"./...\" matched no packages\nno packages to test\n","output":"go: warning: \"./...\" matched no packages\nno packages to test","error":"exit status 1","metadata":{"command":"go test ./...","duration_ms":7,"exit_code":1,"truncated":false}}
 
+---
+
+## Remediation Cycle 2 — Architect
+
+**Current overview:** A Go microservice that periodically fetches Linear.app issues via GraphQL API and persists them to PostgreSQL. The service runs a 5-minute sync loop with graceful shutdown, structured logging, and upsert-based storage to handle issue updates. All configuration is environment-driven with comprehensive error handling and context propagation.
+
+### Remediation Tasks
+
+| ID | Specialty | Title | Depends On | Description |
+|---|---|---|---|---|
+| 1d94532d | backend | Write All 9 Go Source Files to Workspace Root | - | Produce artifact kind `code`, name `linear-sync-source-files`. Use write_file tool to transcribe all 9 source files exactly as provided in the task specification to the workspace root directory: go.mod, go.sum, main.go, config.go, linear.go, storage.go, config_test.go, linear_test.go, storage_test.go. Each file must be written verbatim without any character modifications. After writing all files, use glob or ls tool to verify all 9 files exist in the workspace before proceeding. This fixes the QA blocking issue where 'go test ./...' fails with 'no packages to test' due to missing source files. |
+| 27a98e72 | backend | Build and Test Linear Sync Service | - | Produce artifact kind `validation`, name `build-test-verification`. After confirming all 9 source files exist in workspace, execute 'go build -buildvcs=false .' to compile the service. Verify build produces no errors and creates executable. Then execute 'go test -buildvcs=false . -v' to run test suite. Verify output shows exactly 4 PASS results and 2 SKIP results (storage tests skip without PostgreSQL, which is expected). Report any deviations from expected results. Do not proceed to commit if build fails or test results differ from expectations. |
+| 7b2827e4 | backend | Commit and Push to GitHub Repository | - | Produce artifact kind `git-commit`, name `github-push-completion`. After successful build and test validation, commit all 9 source files using git add, git commit with message 'Add Linear.app to PostgreSQL sync service (workflow 13ebcc13-3f88-4186-bc3c-2ecb581e4ceb)' and Co-authored-by trailer 'Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>'. Push commit to main branch of github.com/bryanbarton525/linear-sync. Verify push succeeds and remote repository reflects exact state of all 9 provided files. |
+
