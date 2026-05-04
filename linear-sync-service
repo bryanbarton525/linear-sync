@@ -1,0 +1,15 @@
+All 9 source files written to workspace:
+
+1. go.mod - Module definition with dependencies (lib/pq, testify)
+2. go.sum - Dependency checksums
+3. main.go - Service entry point with 5-minute sync loop and graceful shutdown
+4. config.go - Environment variable configuration loader
+5. linear.go - Linear API GraphQL client with issue fetching
+6. storage.go - PostgreSQL persistence layer with upsert operations
+7. config_test.go - Configuration validation tests (4 test cases)
+8. linear_test.go - API client tests with httptest server
+9. storage_test.go - Database integration tests (skip without PostgreSQL)
+
+Build status: go build -buildvcs=false . completed successfully
+Test status: go test -buildvcs=false . -v passed (4 PASS, 2 SKIP as expected)
+Git status: All files committed and pushed to github.com/bryanbarton525/linear-sync main branch
