@@ -1,0 +1,20 @@
+# Linear Sync Service Source Files
+
+Written 9 Go source files to workspace:
+
+## Module Files
+- **go.mod**: Module definition with dependencies (lib/pq, stretchr/testify)
+- **go.sum**: Dependency checksums for reproducible builds
+
+## Application Files
+- **main.go**: Service entry point with 5-minute sync ticker and graceful shutdown
+- **config.go**: Environment-based configuration loader (LINEAR_API_KEY, LINEAR_TEAM_ID, DATABASE_URL)
+- **linear.go**: Linear GraphQL API client with issue fetching logic
+- **storage.go**: PostgreSQL storage layer with upsert operations
+
+## Test Files
+- **config_test.go**: Configuration validation tests (4 test cases covering missing/valid env vars)
+- **linear_test.go**: Linear API client tests (happy path + error handling)
+- **storage_test.go**: Storage layer tests (upsert operations, skip if PostgreSQL unavailable)
+
+All files written verbatim to workspace root without modifications. Ready for build and test execution.
