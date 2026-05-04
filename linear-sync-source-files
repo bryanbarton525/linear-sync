@@ -1,0 +1,13 @@
+All 9 source files written to workspace:
+
+- go.mod: Module definition with dependencies (lib/pq, testify)
+- go.sum: Checksums for all dependencies
+- main.go: Entry point with ticker-based sync loop and signal handling
+- config.go: Environment variable configuration loader
+- linear.go: Linear GraphQL API client with issue fetching
+- storage.go: PostgreSQL storage layer with upsert operations
+- config_test.go: Configuration loading tests (4 test cases)
+- linear_test.go: Linear client tests with httptest mocks
+- storage_test.go: Storage layer tests (skips without PostgreSQL)
+
+All files written verbatim to /var/lib/go-orca/workspaces/13ebcc13-3f88-4186-bc3c-2ecb581e4ceb/
