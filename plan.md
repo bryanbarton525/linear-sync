@@ -59,3 +59,15 @@ Implementation defect: Pod created document artifacts instead of writing actual 
 - [Source Files] Workspace validation found no Go source files in /var/lib/go-orca/workspaces/3cc4f0e3-7a14-4098-a4e6-d107e82cb8fc. Pod must write the source files before Go validation can run.
 - [Workspace Source Files] Toolchain validation failed: no Go source files found in workspace at /var/lib/go-orca/workspaces/3cc4f0e3-7a14-4098-a4e6-d107e82cb8fc. The Pod created 4 document artifacts describing the implementation but did not write the actual 9 Go source files (go.mod, go.sum, main.go, config.go, linear.go, storage.go, config_test.go, linear_test.go, storage_test.go) to the workspace using the write_file tool. All artifacts are of kind 'document' containing summaries, not the actual source code.: Use the write_file tool to write all 9 Go source files verbatim to the workspace path /var/lib/go-orca/workspaces/3cc4f0e3-7a14-4098-a4e6-d107e82cb8fc before running any build or test commands. Each file must be written with the exact content provided in the task specification. After writing all files, the toolchain validation should pass and enable subsequent build/test operations.
 
+---
+
+## Remediation Cycle 1 — Architect
+
+**Current overview:** This is a mechanical implementation task with no design decisions. The service is a Linear.app to PostgreSQL synchronization daemon that polls Linear issues every 5 minutes and upserts them into a PostgreSQL table. All 9 source files are provided verbatim and must be written exactly as specified, then built and tested to verify correctness before committing to the repository.
+
+### Remediation Tasks
+
+| ID | Specialty | Title | Depends On | Description |
+|---|---|---|---|---|
+| 076e2228 | backend | Write all 9 Go source files to workspace using write_file tool | - | Use the write_file tool to write all 9 Go source files verbatim to the workspace at /var/lib/go-orca/workspaces/3cc4f0e3-7a14-4098-a4e6-d107e82cb8fc. Make all 9 write_file calls in parallel (single response). Each file must be written with the exact content provided below, with no additions, removals, or character changes. Artifact kind for each file is 'code'. Files to write: (1) go.mod with module declaration and dependencies, (2) go.sum with checksums, (3) main.go with service entry point and sync loop, (4) config.go with environment variable loading, (5) linear.go with Linear API client, (6) storage.go with PostgreSQL storage layer, (7) config_test.go with configuration tests, (8) linear_test.go with API client tests, (9) storage_test.go with storage tests. After writing all files, the workspace must contain exactly these 9 files with byte-for-byte matching content. Acceptance criteria: All 9 write_file tool calls succeed, workspace validation passes showing 9 Go source files present, no document artifacts created, files are written to /var/lib/go-orca/workspaces/3cc4f0e3-7a14-4098-a4e6-d107e82cb8fc (not to artifacts storage). |
+
