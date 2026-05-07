@@ -6,10 +6,10 @@
 *.dylib
 *.test
 *.out
-# Compiled binaries (names without extension)
-linear-sync
-server
-main
-app
+# Compiled binaries (names without extension — root-level only)
+/linear-sync
+/server
+/main
+/app
 # Dependency vendor directory
 vendor/
