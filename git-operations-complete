@@ -1,9 +1,0 @@
-Successfully committed and pushed Linear.app PostgreSQL sync service to github.com/bryanbarton525/linear-sync.
-
-Operations performed:
-1. Staged all 9 source files (go.mod, go.sum, main.go, config.go, linear.go, storage.go, config_test.go, linear_test.go, storage_test.go)
-2. Committed with message: 'Add Linear.app to PostgreSQL sync service' including Co-authored-by trailer
-3. Pushed workflow branch workflow/c7f92732-cc4d-4e98-ac43-fb5981fe9d96 to remote
-4. Pushed to main branch at github.com/bryanbarton525/linear-sync
-
-All source files are now available in the remote repository and the service is ready for deployment.
