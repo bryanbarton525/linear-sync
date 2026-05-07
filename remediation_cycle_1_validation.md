@@ -1,0 +1,1 @@
+Checking workspace state and fixing go.mod module path issue.
